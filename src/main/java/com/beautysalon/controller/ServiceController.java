@@ -1,60 +1,92 @@
 package com.beautysalon.controller;
-// Указываем, что файл находится в папке controller
+// Указываем, что файл относится к контроллерам (API)
 
 import com.beautysalon.model.Service;
-// Импортируем модель "услуга", с которой будем работать
-
 import com.beautysalon.repository.ServiceRepository;
-// Импортируем репозиторий — интерфейс, через который мы обращаемся к базе данных
+import com.beautysalon.config.JwtUtil;
 
 import org.springframework.beans.factory.annotation.Autowired;
-// Аннотация @Autowired автоматически создаёт объект и вставляет его в нужное место
-
 import org.springframework.http.ResponseEntity;
-// ResponseEntity — это специальный объект-ответ. Позволяет возвращать и данные, и статус коды
-
 import org.springframework.web.bind.annotation.*;
-// Импортируем аннотации REST API: @RestController, @RequestMapping, @GetMapping и т.д.
 
 import java.util.List;
-// Импортируем List, чтобы возвращать список услуг
 
 @RestController
-// Аннотация @RestController говорит Spring: это контроллер, обрабатывающий HTTP-запросы и возвращающий JSON
-
 @RequestMapping("/api/services")
-// Все маршруты в этом классе будут начинаться с /api/services
-
+// Все маршруты в этом классе начинаются с /api/services
 public class ServiceController {
-    // Это наш класс-контроллер, через который клиент будет взаимодействовать с услугами
 
     @Autowired
     private ServiceRepository serviceRepository;
-    // Мы подключаем наш репозиторий, чтобы иметь доступ к базе данных.
-    // Благодаря @Autowired Spring сам найдёт реализацию и "вставит" её сюда
+
+    @Autowired
+    private JwtUtil jwtUtil;
+    // Для извлечения роли из токена
 
     @GetMapping
     public List<Service> getAllServices() {
-        // Метод обрабатывает GET-запрос на /api/services
-        // Возвращает список всех услуг из базы
+        // Этот метод доступен всем авторизованным пользователям
         return serviceRepository.findAll();
-        // .findAll() — это метод, который возвращает все записи из коллекции "services"
     }
 
     @PostMapping
-    public ResponseEntity<Service> addService(@RequestBody Service service) {
-        // Метод обрабатывает POST-запрос на /api/services
-        // @RequestBody говорит Spring: "возьми JSON из запроса и преврати в объект Service"
-        // Например, если в Postman отправят:
-        // {
-        //   "name": "Маникюр", "description": "Классика", "duration": 60, "price": 30, "category": "Ногти"
-        // }
-        // — этот JSON превратится в объект `service` внутри метода
+    public ResponseEntity<?> addService(@RequestBody Service service,
+                                        @RequestHeader("Authorization") String authHeader) {
+        // Извлекаем токен
+        String token = authHeader.substring(7);
+        String role = jwtUtil.extractRole(token);
+
+        if (!role.equals("admin")) {
+            return ResponseEntity.status(403).body("Access denied: only admin can add services");
+        }
 
         Service saved = serviceRepository.save(service);
-        // Сохраняем услугу в MongoDB
-
         return ResponseEntity.ok(saved);
-        // Возвращаем сохранённую услугу + статус 200 OK
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateService(@PathVariable String id,
+                                           @RequestBody Service updatedService,
+                                           @RequestHeader("Authorization") String authHeader) {
+        String token = authHeader.substring(7);
+        String role = jwtUtil.extractRole(token);
+
+        if (!role.equals("admin")) {
+            return ResponseEntity.status(403).body("Access denied: only admin can update services");
+        }
+
+        return serviceRepository.findById(id).map(service -> {
+            service.setName(updatedService.getName());
+            service.setDescription(updatedService.getDescription());
+            service.setDuration(updatedService.getDuration());
+            service.setPrice(updatedService.getPrice());
+            service.setCategory(updatedService.getCategory());
+            Service saved = serviceRepository.save(service);
+            return ResponseEntity.ok(saved);
+        }).orElse(ResponseEntity.notFound().build());
+    }
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getServiceById(@PathVariable String id) {
+        return serviceRepository.findById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteService(@PathVariable String id,
+                                           @RequestHeader("Authorization") String authHeader) {
+        String token = authHeader.substring(7);
+        String role = jwtUtil.extractRole(token);
+
+        if (!role.equals("admin")) {
+            return ResponseEntity.status(403).body("Access denied: only admin can delete services");
+        }
+
+        if (!serviceRepository.existsById(id)) {
+            return ResponseEntity.notFound().build();
+        }
+
+        serviceRepository.deleteById(id);
+        return ResponseEntity.noContent().build();
     }
 }

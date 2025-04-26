@@ -8,7 +8,6 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 
 @Configuration
 public class MongoConfig {
-
     @Bean
     public MongoClient mongoClient() {
         String uri = "mongodb+srv://" +
