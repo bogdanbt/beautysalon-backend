@@ -1,34 +1,24 @@
 package com.beautysalon.controller;
 
 
-import java.util.Map;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
-import com.beautysalon.repository.AppointmentRepository;
-import java.time.LocalDate;
-import java.time.LocalTime;
+import com.beautysalon.config.JwtUtil;
+import com.beautysalon.dto.CreateMasterWithUserRequest;
 import com.beautysalon.dto.PublicMasterDTO;
 import com.beautysalon.model.Master;
 import com.beautysalon.model.User;
+import com.beautysalon.repository.AppointmentRepository;
 import com.beautysalon.repository.MasterRepository;
 import com.beautysalon.repository.UserRepository;
-import com.beautysalon.config.JwtUtil;
-import com.beautysalon.dto.CreateMasterWithUserRequest;
-import com.beautysalon.dto.MasterWithSlotsDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/masters")
@@ -145,43 +135,7 @@ public class MasterController {
         return masterRepository.findByServiceIdsContains(serviceId);
     }
 
-    @GetMapping("/with-slots")
-    public ResponseEntity<?> getMastersWithSlots(@RequestParam String serviceId) {
-        List<Master> masters = masterRepository.findByServiceIdsContains(serviceId)
-                .stream()
-                .filter(Master::isActive)
-                .filter(m -> !m.isOnVacation())
-                .toList();
 
-        LocalDate today = LocalDate.now();
-        int daysAhead = 14;
-
-        List<MasterWithSlotsDTO> result = new ArrayList<>();
-
-        for (Master master : masters) {
-            Map<String, List<String>> availableSlots = new LinkedHashMap<>();
-
-            for (int i = 0; i < daysAhead; i++) {
-                LocalDate date = today.plusDays(i);
-                String weekDay = getDayKey(date);
-                List<String> times = master.getSchedule().getOrDefault(weekDay, List.of());
-
-                for (String time : times) {
-                    boolean isTaken = appointmentRepository.existsByMasterIdAndDateAndTime(
-                            master.getId(), date, LocalTime.parse(time)
-                    );
-                    if (!isTaken) {
-                        String dateKey = date.toString();
-                        availableSlots.computeIfAbsent(dateKey, k -> new ArrayList<>()).add(time);
-                    }
-                }
-            }
-
-            result.add(new MasterWithSlotsDTO(master.getId(), master.getName(), availableSlots));
-        }
-
-        return ResponseEntity.ok(result);
-    }
 
     private String getDayKey(LocalDate date) {
         return switch (date.getDayOfWeek()) {
@@ -238,58 +192,8 @@ public class MasterController {
     }
 
 
-    @GetMapping("/available")
-    public List<Master> getAvailableMasters(
-            @RequestParam String serviceId,
-            @RequestParam String date,
-            @RequestParam String time
-    ) {
-        List<Master> all = masterRepository.findByServiceIdsContains(serviceId);
 
-        // Убираем тех, кто:
-        // 1. В отпуске
-        // 2. Не активен
-        // 3. Не работает в это время
-        // 4. Уже занят по записи
 
-        return all.stream().filter(master -> {
-            if (!master.isActive() || master.isOnVacation()) return false;
-            List<String> times = master.getSchedule().getOrDefault(getDayKey(date), List.of());
-            if (!times.contains(time)) return false;
 
-            // Проверка по AppointmentRepository
-            boolean isTaken = appointmentRepository.existsByMasterIdAndDateAndTime(
-                    master.getId(), LocalDate.parse(date), LocalTime.parse(time)
-            );
 
-            return !isTaken;
-        }).toList();
-    }
-
-    private String getDayKey(String dateStr) {
-        LocalDate date = LocalDate.parse(dateStr);
-        return switch (date.getDayOfWeek()) {
-            case MONDAY -> "Mon";
-            case TUESDAY -> "Tue";
-            case WEDNESDAY -> "Wed";
-            case THURSDAY -> "Thu";
-            case FRIDAY -> "Fri";
-            case SATURDAY -> "Sat";
-            case SUNDAY -> "Sun";
-        };
-    }
-
-    @GetMapping("/by-user")
-    public ResponseEntity<Master> getMasterByUser(@RequestHeader("Authorization") String authHeader) {
-        String token = authHeader.substring(7);
-        String userId = jwtUtil.extractUserId(token);
-
-        Optional<Master> master = masterRepository.findAll()
-                .stream()
-                .filter(m -> m.getUserId().equals(userId))
-                .findFirst();
-
-        return master.map(ResponseEntity::ok)
-                .orElse(ResponseEntity.status(404).build());
-    }
 }

@@ -125,12 +125,7 @@ public class AppointmentController {
         return ResponseEntity.ok(appointmentService.getAppointmentsForMaster(master.getId()));
     }
 
-    // (по желанию) 🗑 Удаление записи
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteAppointment(@PathVariable String id) {
-        appointmentRepository.deleteById(id);
-        return ResponseEntity.noContent().build();
-    }
+
 
     @GetMapping("/admin/all")
     public List<AppointmentInfoDTO> getAllAppointments() {
