@@ -1,21 +1,18 @@
 package com.beautysalon.controller;
-import com.beautysalon.service.AppointmentService;
-import com.beautysalon.repository.UserRepository;
-import com.beautysalon.model.Master;
-import java.util.Optional;
 
 import com.beautysalon.config.JwtUtil;
+import com.beautysalon.dto.AppointmentInfoDTO;
 import com.beautysalon.model.Appointment;
+import com.beautysalon.model.Master;
 import com.beautysalon.repository.AppointmentRepository;
-import com.beautysalon.repository.ServiceRepository;
 import com.beautysalon.repository.MasterRepository;
-
+import com.beautysalon.repository.ServiceRepository;
+import com.beautysalon.repository.UserRepository;
+import com.beautysalon.service.AppointmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import com.beautysalon.dto.AppointmentInfoDTO;
-import java.time.LocalDate;
-import java.time.LocalTime;
+
 import java.util.List;
 
 @RestController
@@ -124,7 +121,6 @@ public class AppointmentController {
 
         return ResponseEntity.ok(appointmentService.getAppointmentsForMaster(master.getId()));
     }
-
 
 
     @GetMapping("/admin/all")

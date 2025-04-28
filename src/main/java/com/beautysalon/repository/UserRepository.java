@@ -2,10 +2,7 @@ package com.beautysalon.repository;
 // Указываем, что файл находится в пакете repository (работа с базой)
 
 import com.beautysalon.model.User;
-// Импортируем нашу модель User
-
 import org.springframework.data.mongodb.repository.MongoRepository;
-// Импортируем интерфейс, который позволяет Spring работать с MongoDB
 
 import java.util.Optional;
 // Optional — тип, который может содержать объект или быть пустым (например, если пользователь не найден)

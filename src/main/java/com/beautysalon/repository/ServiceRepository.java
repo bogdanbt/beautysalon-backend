@@ -2,8 +2,6 @@ package com.beautysalon.repository;
 // Указываем, что файл лежит в папке repository
 
 import com.beautysalon.model.Service;
-// Импортируем модель, с которой работаем (услуга)
-
 import org.springframework.data.mongodb.repository.MongoRepository;
 // Импортируем интерфейс, который даёт доступ к базе данных MongoDB
 

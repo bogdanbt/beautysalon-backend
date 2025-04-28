@@ -23,48 +23,89 @@ public class Master {
 
     private boolean onVacation; // в отпуске?
 
+    private String photoUrl;
+
     private Map<String, List<String>> schedule;
     // Расписание: "Mon" → ["10:00", "11:00"]
 
-    public Master() {}
+    public Master() {
+    }
 
     public Master(String name, String userId, List<String> serviceIds,
-                  boolean active, boolean onVacation, Map<String, List<String>> schedule) {
+                  boolean active, boolean onVacation, Map<String, List<String>> schedule, String photoUrl) {
         this.name = name;
         this.userId = userId;
         this.serviceIds = serviceIds;
         this.active = active;
         this.onVacation = onVacation;
         this.schedule = schedule;
+        this.photoUrl = photoUrl;
     }
 
     // Getters and Setters
 
-    public String getId() { return id; }
+    public String getId() {
+        return id;
+    }
 
-    public void setId(String id) { this.id = id; }
+    public void setId(String id) {
+        this.id = id;
+    }
 
-    public String getName() { return name; }
+    public String getName() {
+        return name;
+    }
 
-    public void setName(String name) { this.name = name; }
+    public void setName(String name) {
+        this.name = name;
+    }
 
-    public String getUserId() { return userId; }
+    public String getUserId() {
+        return userId;
+    }
 
-    public void setUserId(String userId) { this.userId = userId; }
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
 
-    public List<String> getServiceIds() { return serviceIds; }
+    public List<String> getServiceIds() {
+        return serviceIds;
+    }
 
-    public void setServiceIds(List<String> serviceIds) { this.serviceIds = serviceIds; }
+    public void setServiceIds(List<String> serviceIds) {
+        this.serviceIds = serviceIds;
+    }
 
-    public boolean isActive() { return active; }
+    public boolean isActive() {
+        return active;
+    }
 
-    public void setActive(boolean active) { this.active = active; }
+    public void setActive(boolean active) {
+        this.active = active;
+    }
 
-    public boolean isOnVacation() { return onVacation; }
+    public boolean isOnVacation() {
+        return onVacation;
+    }
 
-    public void setOnVacation(boolean onVacation) { this.onVacation = onVacation; }
+    public void setOnVacation(boolean onVacation) {
+        this.onVacation = onVacation;
+    }
 
-    public Map<String, List<String>> getSchedule() { return schedule; }
+    public Map<String, List<String>> getSchedule() {
+        return schedule;
+    }
 
-    public void setSchedule(Map<String, List<String>> schedule) { this.schedule = schedule; }
+    public void setSchedule(Map<String, List<String>> schedule) {
+        this.schedule = schedule;
+    }
+
+    public String getPhotoUrl() {
+        return photoUrl;
+    }
+
+    public void setPhotoUrl(String photoUrl) {
+        this.photoUrl = photoUrl;
+    }
+
 }

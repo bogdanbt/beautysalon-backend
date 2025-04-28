@@ -1,9 +1,10 @@
 package com.beautysalon.repository;
-import java.util.Optional;
 
 import com.beautysalon.model.Master;
 import org.springframework.data.mongodb.repository.MongoRepository;
+
 import java.util.List;
+import java.util.Optional;
 
 public interface MasterRepository extends MongoRepository<Master, String> {
     // Этот интерфейс позволяет делать базовые действия с коллекцией masters:
@@ -14,6 +15,7 @@ public interface MasterRepository extends MongoRepository<Master, String> {
 
     // Дополнительно: найдём всех мастеров, кто выполняет определённую услугу
     List<Master> findByServiceIdsContains(String serviceId);
+
     // Add this method to find by userId
     Optional<Master> findByUserId(String userId);
 

@@ -56,6 +56,7 @@ public class MasterController {
         Master saved = masterRepository.save(master);
         return ResponseEntity.ok(saved);
     }
+
     @GetMapping("/{id}")
     public ResponseEntity<?> getMasterById(@PathVariable String id,
                                            @RequestHeader("Authorization") String authHeader) {
@@ -103,6 +104,7 @@ public class MasterController {
         master.setActive(request.active);
         master.setOnVacation(request.onVacation);
         master.setSchedule(request.schedule);
+        master.setPhotoUrl(request.photoUrl);
 
         Master saved = masterRepository.save(master);
 
@@ -126,6 +128,7 @@ public class MasterController {
             master.setActive(updated.isActive());
             master.setOnVacation(updated.isOnVacation());
             master.setUserId(updated.getUserId());
+            master.setPhotoUrl(updated.getPhotoUrl());
             return ResponseEntity.ok(masterRepository.save(master));
         }).orElse(ResponseEntity.notFound().build());
     }
@@ -134,7 +137,6 @@ public class MasterController {
     public List<Master> getMastersByService(@PathVariable String serviceId) {
         return masterRepository.findByServiceIdsContains(serviceId);
     }
-
 
 
     private String getDayKey(LocalDate date) {
@@ -190,10 +192,6 @@ public class MasterController {
         return List.of("09:00", "10:00", "11:00", "12:00", "13:00",
                 "14:00", "15:00", "16:00", "17:00");
     }
-
-
-
-
 
 
 }

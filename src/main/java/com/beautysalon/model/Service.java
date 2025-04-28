@@ -2,8 +2,6 @@ package com.beautysalon.model;
 // package — это папка, в которой лежит файл. Помогает организовать проект по папкам
 
 import org.springframework.data.annotation.Id;
-// импорт аннотации @Id — помечает поле, как главный ID в MongoDB
-
 import org.springframework.data.mongodb.core.mapping.Document;
 // импорт аннотации @Document — говорит, что этот класс будет храниться в MongoDB как коллекция
 
@@ -32,16 +30,20 @@ public class Service {
     private String category;
     // Категория (например, "Волосы", "Ногти", "Косметология")
 
-    public Service() {}
+    private String photoUrl;
+
+    public Service() {
+    }
     // Пустой конструктор. Нужен Spring'у, чтобы создавать объекты автоматически
 
-    public Service(String name, String description, int duration, double price, String category) {
+    public Service(String name, String description, int duration, double price, String category, String photoUrl) {
         // Конструктор, который сразу задаёт все поля
         this.name = name;
         this.description = description;
         this.duration = duration;
         this.price = price;
         this.category = category;
+        this.photoUrl = photoUrl;
     }
 
     // --- Геттеры и сеттеры ---
@@ -95,4 +97,13 @@ public class Service {
     public void setCategory(String category) {
         this.category = category;
     }
+
+    public String getPhotoUrl() {
+        return photoUrl;
+    }
+
+    public void setPhotoUrl(String photoUrl) {
+        this.photoUrl = photoUrl;
+    }
+
 }

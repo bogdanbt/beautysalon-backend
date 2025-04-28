@@ -2,7 +2,6 @@ package com.beautysalon.service;
 
 import com.beautysalon.dto.AppointmentInfoDTO;
 import com.beautysalon.model.Appointment;
-import com.beautysalon.model.Master;
 import com.beautysalon.repository.AppointmentRepository;
 import com.beautysalon.repository.MasterRepository;
 import com.beautysalon.repository.ServiceRepository;

@@ -1,11 +1,9 @@
 package com.beautysalon.config;
 
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
-
 import org.springframework.stereotype.Component;
-import com.beautysalon.config.EnvConfig;
+
 import java.security.Key;
 import java.util.Date;
 

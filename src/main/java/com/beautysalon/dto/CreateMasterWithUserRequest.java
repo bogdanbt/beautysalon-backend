@@ -7,6 +7,7 @@ public class CreateMasterWithUserRequest {
     public String name;
     public String email;
     public String password;
+    public String photoUrl;
 
     public List<String> serviceIds;
     public boolean active;

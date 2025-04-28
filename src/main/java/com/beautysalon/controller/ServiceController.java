@@ -1,10 +1,9 @@
 package com.beautysalon.controller;
 // Указываем, что файл относится к контроллерам (API)
 
+import com.beautysalon.config.JwtUtil;
 import com.beautysalon.model.Service;
 import com.beautysalon.repository.ServiceRepository;
-import com.beautysalon.config.JwtUtil;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -61,10 +60,12 @@ public class ServiceController {
             service.setDuration(updatedService.getDuration());
             service.setPrice(updatedService.getPrice());
             service.setCategory(updatedService.getCategory());
+            service.setPhotoUrl(updatedService.getPhotoUrl());
             Service saved = serviceRepository.save(service);
             return ResponseEntity.ok(saved);
         }).orElse(ResponseEntity.notFound().build());
     }
+
     @GetMapping("/{id}")
     public ResponseEntity<?> getServiceById(@PathVariable String id) {
         return serviceRepository.findById(id)
