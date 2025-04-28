@@ -11,10 +11,11 @@ import java.util.Date;
 public class JwtUtil {
 
 
-    private final Key key = Keys.hmacShaKeyFor(
-            EnvConfig.get("SECRET_KEY").getBytes()
-    );
-    // Секретный ключ, которым подписываем токен
+    private final String secret = EnvConfig.get("SECRET_KEY"); // просто строка
+
+    private Key getKey() {
+        return Keys.hmacShaKeyFor(secret.getBytes());
+    }
 
     public String generateToken(String email, String userId, String role) {
         // Создаём токен и зашиваем туда email, ID и роль
@@ -24,13 +25,13 @@ public class JwtUtil {
                 .claim("role", role)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + 86400000)) // 24 часа
-                .signWith(key)
+                .signWith(getKey())
                 .compact();
     }
 
     public String extractEmail(String token) {
         return Jwts.parserBuilder()
-                .setSigningKey(key)
+                .setSigningKey(getKey())
                 .build()
                 .parseClaimsJws(token)
                 .getBody()
@@ -39,7 +40,7 @@ public class JwtUtil {
 
     public String extractUserId(String token) {
         return Jwts.parserBuilder()
-                .setSigningKey(key)
+                .setSigningKey(getKey())
                 .build()
                 .parseClaimsJws(token)
                 .getBody()
@@ -48,7 +49,7 @@ public class JwtUtil {
 
     public String extractRole(String token) {
         return Jwts.parserBuilder()
-                .setSigningKey(key)
+                .setSigningKey(getKey())
                 .build()
                 .parseClaimsJws(token)
                 .getBody()
@@ -58,7 +59,7 @@ public class JwtUtil {
     public boolean validateToken(String token) {
         try {
             Jwts.parserBuilder()
-                    .setSigningKey(key)
+                    .setSigningKey(getKey())
                     .build()
                     .parseClaimsJws(token);
             return true;
