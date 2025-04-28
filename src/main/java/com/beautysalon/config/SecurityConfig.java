@@ -50,7 +50,7 @@ public class SecurityConfig {
     public CorsFilter corsFilter() {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
-        config.addAllowedOrigin("http://beautysalon.netlify.app"); // Разрешаем запросы от React
+        config.addAllowedOrigin("http://luxespa.netlify.app"); // Разрешаем запросы от React
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");
 
